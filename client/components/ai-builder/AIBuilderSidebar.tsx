@@ -44,53 +44,6 @@ export const AIBuilderSidebar: React.FC = () => {
             className="pl-9 h-8 text-sm border-gray-200"
           />
         </div>
-
-        {/* Customize */}
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-gray-700 hover:bg-gray-200"
-        >
-          <Settings className="w-4 h-4 mr-3" />
-          Customize
-        </Button>
-      </div>
-
-      {/* Main Navigation */}
-      <div className="p-4 space-y-2 border-b border-gray-200">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-gray-700 hover:bg-gray-200"
-        >
-          <MessageSquare className="w-4 h-4 mr-3" />
-          Chats
-        </Button>
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-gray-700 hover:bg-gray-200"
-        >
-          <FolderOpen className="w-4 h-4 mr-3" />
-          Projects
-        </Button>
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-gray-700 hover:bg-gray-200"
-        >
-          <Grid3x3 className="w-4 h-4 mr-3" />
-          Artifacts
-        </Button>
-
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            className="flex-1 justify-start text-gray-700 hover:bg-gray-200"
-          >
-            <Code className="w-4 h-4 mr-3" />
-            Code
-          </Button>
-          <span className="text-xs font-semibold text-valasys-orange pr-2">Upgrade</span>
-        </div>
       </div>
 
       {/* Recents Section */}
