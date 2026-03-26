@@ -183,7 +183,7 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
   }, [component?.id]); // Only update when component ID changes
 
   const handleStyleChange = React.useCallback(
-    (key: keyof StyleState, value: string) => {
+    (key: keyof StyleState, value: string | string[] | "all" | "desktop" | "mobile") => {
       // Update local state immediately for responsive UI
       setStyles((prev) => ({
         ...prev,
@@ -198,8 +198,11 @@ export const ElementStylePanel: React.FC<ElementStylePanelProps> = ({
         key === "borderColor"
       ) {
         updates[key] = value;
+      } else if (key === "displayConditions" || key === "contentVisibility") {
+        // These are special properties that don't need conversion
+        updates[key] = value;
       } else {
-        updates[key] = isNaN(Number(value)) ? value : Number(value);
+        updates[key] = isNaN(Number(value as string)) ? value : Number(value as string);
       }
 
       // Store in pending updates
