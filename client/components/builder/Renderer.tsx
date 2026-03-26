@@ -12,8 +12,11 @@ import {
   Star,
   Quote,
   ChevronDown,
+  Copy,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface RendererProps {
   component: BuilderComponent;
@@ -34,6 +37,24 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
   onSelect,
   isSelected,
 }) => {
+  const { toast } = useToast();
+
+  const handleCopyComponent = () => {
+    try {
+      const componentData = JSON.stringify(component, null, 2);
+      navigator.clipboard.writeText(componentData);
+      toast({
+        title: "Copied",
+        description: "Component copied to clipboard.",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Unable to copy the component.",
+      });
+    }
+  };
+
   const [{ isDragging }, drag] = useDrag({
     type: DRAG_TYPES.COMPONENT,
     item: { id: component.id, type: component.type },
@@ -106,18 +127,6 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
   };
 
   const wrapWithControls = (content: React.ReactNode) => {
-    const isResizable = [
-      "section",
-      "image",
-      "video",
-      "hero",
-      "feature-grid",
-      "pricing",
-      "testimonials",
-      "faq",
-      "card",
-    ].includes(component.type);
-
     return (
       <div
         ref={drag}
@@ -129,7 +138,9 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
           "group relative rounded-md transition-all cursor-pointer",
           isDragging && "opacity-30",
           component.type === "column" && "w-full md:w-auto h-full",
-          isSelected ? "border-2 border-valasys-orange shadow-lg shadow-valasys-orange/20" : "border border-transparent hover:border-valasys-orange",
+          isSelected
+            ? "border-2 border-valasys-orange shadow-lg shadow-valasys-orange/20"
+            : "border-2 border-transparent hover:border-valasys-orange hover:border-dashed",
         )}
         style={{
           ...(component.type === "column"
@@ -138,19 +149,49 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
           ...(component.height ? { minHeight: `${component.height}px` } : {}),
         }}
       >
-        <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex items-center bg-valasys-orange rounded-bl-md text-white px-1 z-30 transition-opacity">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-white hover:text-white hover:bg-valasys-orange/90"
-            onClick={() => onRemove(component.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-          <div className="h-6 w-6 flex items-center justify-center cursor-move">
-            <Move className="h-3.5 w-3.5" />
+        {isSelected && (
+          <div className="absolute top-0 right-0 flex items-center gap-1 bg-white rounded-bl-md text-valasys-orange px-1 py-1 z-30 shadow-lg border border-valasys-orange/20">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 hover:bg-valasys-orange/10"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopyComponent();
+              }}
+              title="Copy element"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 hover:bg-valasys-orange/10"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAdd(component.type, component.id, component.children?.length || 0);
+              }}
+              title="Add element"
+            >
+              <Plus className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 hover:bg-red-100 text-red-500"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(component.id);
+              }}
+              title="Delete element"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+            <div className="h-6 w-6 flex items-center justify-center cursor-move hover:bg-valasys-orange/10 rounded">
+              <Move className="h-3.5 w-3.5" />
+            </div>
           </div>
-        </div>
+        )}
 
         {component.type === "column" && (
           <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 flex items-center justify-between bg-valasys-orange/5 px-2 py-1 z-20 text-[10px] font-bold text-valasys-orange pointer-events-none">
@@ -180,30 +221,6 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
               </Button>
             </div>
           </div>
-        )}
-
-        {isResizable && (
-          <div
-            className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize opacity-0 group-hover:opacity-100 bg-valasys-orange/30 hover:bg-valasys-orange transition-all z-20"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              const startY = e.clientY;
-              const startHeight = component.height || (component.type === "section" ? 200 : 100);
-
-              const onMouseMove = (moveEvent: MouseEvent) => {
-                const newHeight = Math.max(50, startHeight + (moveEvent.clientY - startY));
-                onUpdate(component.id, { height: newHeight });
-              };
-
-              const onMouseUp = () => {
-                window.removeEventListener("mousemove", onMouseMove);
-                window.removeEventListener("mouseup", onMouseUp);
-              };
-
-              window.addEventListener("mousemove", onMouseMove);
-              window.addEventListener("mouseup", onMouseUp);
-            }}
-          />
         )}
 
         {content}
