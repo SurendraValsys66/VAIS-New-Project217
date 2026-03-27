@@ -28,6 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [selectedElementId, setSelectedElementId] = React.useState<string | null>(null);
   const [hoveredElementId, setHoveredElementId] = React.useState<string | null>(null);
+  const [editingElementId, setEditingElementId] = React.useState<string | null>(null);
   const [clipboardData, setClipboardData] = React.useState<{ elementId: string; content: string } | null>(null);
 
   // Define hero elements
@@ -186,7 +187,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     );
 
     const renderControls = () => {
-      if (!isSelected) return null;
+      if (!isSelected || editingElementId === element.id) return null;
 
       return (
         <div
@@ -258,6 +259,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   const text = e.currentTarget.textContent || "";
                   handleElementUpdate(element.id, text);
                 }}
+                onFocus={() => setEditingElementId(element.id)}
+                onBlur={() => setEditingElementId(null)}
                 onClick={(e) => {
                   if (isSelected) e.stopPropagation();
                 }}
@@ -289,6 +292,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 const text = e.currentTarget.textContent || "";
                 handleElementUpdate(element.id, text);
               }}
+              onFocus={() => setEditingElementId(element.id)}
+              onBlur={() => setEditingElementId(null)}
               onClick={(e) => {
                 if (isSelected) e.stopPropagation();
               }}
@@ -319,6 +324,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 const text = e.currentTarget.textContent || "";
                 handleElementUpdate(element.id, text);
               }}
+              onFocus={() => setEditingElementId(element.id)}
+              onBlur={() => setEditingElementId(null)}
               onClick={(e) => {
                 if (isSelected) e.stopPropagation();
               }}
