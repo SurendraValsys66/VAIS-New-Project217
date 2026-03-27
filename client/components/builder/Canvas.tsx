@@ -42,6 +42,8 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
   const [pendingScrollComponentId, setPendingScrollComponentId] = React.useState<string | null>(null);
   const [isVideoDialogOpen, setIsVideoDialogOpen] = React.useState(false);
   const [videoDialogUrl, setVideoDialogUrl] = React.useState("");
+  const [videoDialogFileName, setVideoDialogFileName] = React.useState("");
+  const videoFileInputRef = React.useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const layoutConfig = initialLayout
@@ -102,6 +104,23 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
       videoUrl: videoDialogUrl.trim(),
     });
     setIsVideoDialogOpen(false);
+    setVideoDialogFileName("");
+  };
+
+  const handleVideoFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const result = loadEvent.target?.result;
+      if (typeof result === "string") {
+        setVideoDialogUrl(result);
+        setVideoDialogFileName(file.name);
+      }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = "";
   };
 
   const handleCopyLayout = async () => {
@@ -372,22 +391,63 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ onBack, templateId
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Video URL</label>
-            <Input
-              value={videoDialogUrl}
-              onChange={(e) => setVideoDialogUrl(e.target.value)}
-              placeholder="https://example.com/video.mp4"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && videoDialogUrl.trim()) {
-                  handleSaveVideoDialog();
-                }
-              }}
-            />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Upload Video</label>
+              <input
+                ref={videoFileInputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleVideoFileSelect}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => videoFileInputRef.current?.click()}
+                className="w-full rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-valasys-orange hover:bg-orange-50 transition-colors"
+              >
+                Choose video file
+              </button>
+              {videoDialogFileName && (
+                <p className="text-xs text-gray-500 truncate">Selected file: {videoDialogFileName}</p>
+              )}
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase tracking-wider text-gray-400">
+                <span className="bg-white px-2">Or paste URL</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Video URL</label>
+              <Input
+                value={videoDialogUrl}
+                onChange={(e) => {
+                  setVideoDialogUrl(e.target.value);
+                  setVideoDialogFileName("");
+                }}
+                placeholder="https://example.com/video.mp4"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && videoDialogUrl.trim()) {
+                    handleSaveVideoDialog();
+                  }
+                }}
+              />
+            </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsVideoDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsVideoDialogOpen(false);
+                setVideoDialogFileName("");
+              }}
+            >
               Cancel
             </Button>
             <Button onClick={handleSaveVideoDialog} disabled={!videoDialogUrl.trim()}>
