@@ -547,17 +547,34 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
         </div>,
       );
     }
-    case "video":
+    case "video": {
+      const videoSource = component.videoUrl || component.props?.videoUrl || component.props?.src;
+
       return wrapWithControls(
         <div className="p-4 h-full" style={getComponentStyles()}>
-          <div className="h-full aspect-video bg-black/90 flex items-center justify-center rounded-2xl shadow-xl overflow-hidden relative group/video">
-            <Play className="w-16 h-16 text-white opacity-50 group-hover/video:opacity-100 transition-opacity" />
-            <div className="absolute bottom-4 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden">
-              <div className="w-1/3 h-full bg-valasys-orange" />
+          {videoSource ? (
+            <div className="h-full aspect-video overflow-hidden rounded-2xl bg-black shadow-xl">
+              <video
+                className="h-full w-full object-contain"
+                controls
+                playsInline
+                preload="metadata"
+              >
+                <source src={videoSource} />
+                Your browser does not support the video tag.
+              </video>
             </div>
-          </div>
+          ) : (
+            <div className="h-full aspect-video bg-black/90 flex items-center justify-center rounded-2xl shadow-xl overflow-hidden relative group/video">
+              <Play className="w-16 h-16 text-white opacity-50 group-hover/video:opacity-100 transition-opacity" />
+              <div className="absolute bottom-4 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden">
+                <div className="w-1/3 h-full bg-valasys-orange" />
+              </div>
+            </div>
+          )}
         </div>,
       );
+    }
     case "divider":
       return wrapWithControls(
         <div className="px-4 py-8 h-full flex items-center" style={getComponentStyles()}>
