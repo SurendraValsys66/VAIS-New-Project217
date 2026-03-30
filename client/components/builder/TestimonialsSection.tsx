@@ -144,7 +144,6 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           }}
           className="h-6 w-6 flex items-center justify-center hover:bg-red-100 text-red-500 rounded transition-colors cursor-pointer"
           title="Delete testimonial"
-          disabled={testimonials.length === 1}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
