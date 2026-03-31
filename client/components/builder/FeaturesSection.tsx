@@ -540,14 +540,10 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
               {/* Icon */}
               <div
                 ref={(el) => {
-                  if (el) {
+                  if (el && !el.hasAttribute("data-initialized")) {
+                    el.setAttribute("data-initialized", "true");
+                    el.textContent = feature.icon;
                     featureElementRefsMap.current[`${feature.id}-icon`] = el;
-                    // Only update DOM content if not currently editing this element
-                    if (editingFeatureElementId !== `${feature.id}-icon`) {
-                      if (el.textContent !== feature.icon) {
-                        el.textContent = feature.icon;
-                      }
-                    }
                   }
                 }}
                 dir="ltr"
@@ -592,14 +588,10 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
               {/* Title */}
               <h3
                 ref={(el) => {
-                  if (el) {
+                  if (el && !el.hasAttribute("data-initialized")) {
+                    el.setAttribute("data-initialized", "true");
+                    el.textContent = feature.title;
                     featureElementRefsMap.current[`${feature.id}-title`] = el;
-                    // Only update DOM content if not currently editing this element
-                    if (editingFeatureElementId !== `${feature.id}-title`) {
-                      if (el.textContent !== feature.title) {
-                        el.textContent = feature.title;
-                      }
-                    }
                   }
                 }}
                 dir="ltr"
@@ -645,14 +637,10 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
               {/* Description */}
               <p
                 ref={(el) => {
-                  if (el) {
+                  if (el && !el.hasAttribute("data-initialized")) {
+                    el.setAttribute("data-initialized", "true");
+                    el.textContent = feature.description;
                     featureElementRefsMap.current[`${feature.id}-description`] = el;
-                    // Only update DOM content if not currently editing this element
-                    if (editingFeatureElementId !== `${feature.id}-description`) {
-                      if (el.textContent !== feature.description) {
-                        el.textContent = feature.description;
-                      }
-                    }
                   }
                 }}
                 dir="ltr"

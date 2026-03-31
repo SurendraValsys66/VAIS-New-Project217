@@ -829,11 +829,24 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             className="w-full focus:outline-none focus:ring-0"
             contentEditable
             suppressContentEditableWarning
-            style={{ direction: "ltr" }}
-            onFocus={(e) => {
-              // Clear default text when user focuses to edit
-              if (e.currentTarget.textContent === "Catchy Heading" && !component.contentText) {
-                e.currentTarget.textContent = "";
+            style={{
+              direction: "ltr",
+              color: component.textColor || "#111827",
+              fontSize: component.fontSize ? `${component.fontSize}${component.fontSizeUnit || "px"}` : undefined,
+              fontWeight: component.fontWeight || "700",
+              lineHeight: component.lineHeight || "1.5",
+              letterSpacing: component.letterSpacing ? `${component.letterSpacing}px` : "0",
+              fontFamily: component.fontFamily === "serif" ? "Georgia, serif" :
+                         component.fontFamily === "mono" ? "Courier New, monospace" :
+                         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+              outline: "none !important",
+              border: "none !important",
+              boxShadow: "none !important",
+            }}
+            ref={(el) => {
+              if (el && !el.hasAttribute("data-initialized")) {
+                el.setAttribute("data-initialized", "true");
+                el.textContent = component.contentText || "Catchy Heading";
               }
             }}
             onInput={(e) => {
@@ -850,22 +863,7 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
                 onUpdate(component.id, { contentText: text });
               }
             }}
-            style={{
-              color: component.textColor || "#111827",
-              fontSize: component.fontSize ? `${component.fontSize}${component.fontSizeUnit || "px"}` : undefined,
-              fontWeight: component.fontWeight || "700",
-              lineHeight: component.lineHeight || "1.5",
-              letterSpacing: component.letterSpacing ? `${component.letterSpacing}px` : "0",
-              fontFamily: component.fontFamily === "serif" ? "Georgia, serif" :
-                         component.fontFamily === "mono" ? "Courier New, monospace" :
-                         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
-              outline: "none !important",
-              border: "none !important",
-              boxShadow: "none !important",
-            }}
-          >
-            {component.contentText || "Catchy Heading"}
-          </h2>
+          />
         </div>,
       );
     case "paragraph":
@@ -876,11 +874,24 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             className="focus:outline-none focus:ring-0"
             contentEditable
             suppressContentEditableWarning
-            style={{ direction: "ltr" }}
-            onFocus={(e) => {
-              // Clear default text when user focuses to edit
-              if (e.currentTarget.textContent === defaultParaText && !component.contentText) {
-                e.currentTarget.textContent = "";
+            style={{
+              direction: "ltr",
+              color: component.textColor || "#4b5563",
+              fontSize: component.fontSize ? `${component.fontSize}${component.fontSizeUnit || "px"}` : undefined,
+              fontWeight: component.fontWeight || "400",
+              lineHeight: component.lineHeight || "1.5",
+              letterSpacing: component.letterSpacing ? `${component.letterSpacing}px` : "0",
+              fontFamily: component.fontFamily === "serif" ? "Georgia, serif" :
+                         component.fontFamily === "mono" ? "Courier New, monospace" :
+                         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+              outline: "none !important",
+              border: "none !important",
+              boxShadow: "none !important",
+            }}
+            ref={(el) => {
+              if (el && !el.hasAttribute("data-initialized")) {
+                el.setAttribute("data-initialized", "true");
+                el.textContent = component.contentText || defaultParaText;
               }
             }}
             onInput={(e) => {
@@ -897,22 +908,7 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
                 onUpdate(component.id, { contentText: text });
               }
             }}
-            style={{
-              color: component.textColor || "#4b5563",
-              fontSize: component.fontSize ? `${component.fontSize}${component.fontSizeUnit || "px"}` : undefined,
-              fontWeight: component.fontWeight || "400",
-              lineHeight: component.lineHeight || "1.5",
-              letterSpacing: component.letterSpacing ? `${component.letterSpacing}px` : "0",
-              fontFamily: component.fontFamily === "serif" ? "Georgia, serif" :
-                         component.fontFamily === "mono" ? "Courier New, monospace" :
-                         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
-              outline: "none !important",
-              border: "none !important",
-              boxShadow: "none !important",
-            }}
-          >
-            {component.contentText || defaultParaText}
-          </p>
+          />
         </div>,
       );
     case "button": {
@@ -942,11 +938,12 @@ export const ComponentRenderer: React.FC<RendererProps> = ({
             onFocus={(e) => {
               isFocusedRef.current = true;
               isFirstKeyPressRef.current = true;
-              // Select all text when focusing
+              // Place cursor at the end of the text
               setTimeout(() => {
                 const selection = window.getSelection();
                 const range = document.createRange();
                 range.selectNodeContents(e.currentTarget);
+                range.collapse(false); // Collapse to end
                 selection?.removeAllRanges();
                 selection?.addRange(range);
               }, 0);
