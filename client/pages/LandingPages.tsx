@@ -111,36 +111,19 @@ export default function LandingPages() {
               {pages.map((page) => (
                 <div
                   key={page.id}
-                  className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border-b-4 border-b-transparent hover:border-b-valasys-orange"
+                  className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border-b-4 border-b-transparent hover:border-b-valasys-orange"
                 >
-                  <div className="h-48 bg-gray-50 relative overflow-hidden flex items-center justify-center p-8">
+                  <div className="relative overflow-hidden flex items-center justify-center p-8 aspect-square">
                     <div className="w-full h-full bg-white rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-3 text-gray-300 group-hover:scale-105 group-hover:border-valasys-orange/30 group-hover:text-valasys-orange/30 transition-all">
                       <Layout className="w-10 h-10" />
                       <span className="text-xs font-bold uppercase tracking-widest">No Preview Available</span>
                     </div>
                     <div className="absolute inset-0 bg-valasys-orange/0 group-hover:bg-valasys-orange/5 transition-colors pointer-events-none" />
-                  </div>
 
-                  <div className="p-6 flex-1 flex flex-col">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-valasys-orange transition-colors">{page.name}</h3>
-                        <div className="flex items-center gap-3 text-xs text-gray-400">
-                          <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> Updated {new Date(page.updatedAt).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="bg-valasys-orange/10 text-valasys-orange border-none font-bold px-3">Live</Badge>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-auto">
-                      <Button onClick={handleCreateNew} className="flex-1 bg-valasys-orange hover:bg-valasys-orange/90 text-white rounded-xl py-5 font-bold shadow-lg shadow-valasys-orange/10">
-                        Edit Page
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="w-12 h-12 rounded-xl border border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all p-0 flex items-center justify-center"
-                      >
-                        <Trash2 className="w-5 h-5" />
+                    {/* Use this template button - appears on hover */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-xl">
+                      <Button onClick={handleViewTemplates} className="bg-white text-valasys-orange hover:bg-gray-100 px-8 py-3 rounded-xl font-bold shadow-lg transition-all">
+                        Use this template
                       </Button>
                     </div>
                   </div>
