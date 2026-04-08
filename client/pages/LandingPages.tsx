@@ -23,6 +23,7 @@ export default function LandingPages() {
   const navigate = useNavigate();
   const [view, setView] = useState<View>("list");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState<PageData | null>(null);
   const [pages, setPages] = useState<PageData[]>([
     {
       id: "1",
@@ -51,11 +52,13 @@ export default function LandingPages() {
   ]);
 
   const handleCreateNew = () => {
+    setSelectedTemplate(null);
     setView("editor");
   };
 
-  const handleViewTemplates = () => {
-    // Placeholder for future template functionality
+  const handleViewTemplates = (template: PageData) => {
+    setSelectedTemplate(template);
+    setView("editor");
   };
 
   const handleAIBuilder = () => {
@@ -70,7 +73,7 @@ export default function LandingPages() {
   if (view === "editor") {
     return (
       <DndProvider backend={HTML5Backend}>
-        <BuilderCanvas onBack={handleBack} />
+        <BuilderCanvas onBack={handleBack} template={selectedTemplate} />
       </DndProvider>
     );
   }
@@ -158,7 +161,7 @@ export default function LandingPages() {
 
                     {/* Use this template button - appears on hover */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Button onClick={handleViewTemplates} className="bg-white text-valasys-orange hover:bg-gray-100 px-8 py-3 rounded-xl font-bold shadow-lg transition-all">
+                      <Button onClick={() => handleViewTemplates(page)} className="bg-white text-valasys-orange hover:bg-gray-100 px-8 py-3 rounded-xl font-bold shadow-lg transition-all">
                         Use this template
                       </Button>
                     </div>
