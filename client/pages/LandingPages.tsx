@@ -54,6 +54,10 @@ export default function LandingPages() {
     setView("editor");
   };
 
+  const handleViewTemplates = () => {
+    // Placeholder for future template functionality
+  };
+
   const handleAIBuilder = () => {
     navigate("/ai-builder");
   };
